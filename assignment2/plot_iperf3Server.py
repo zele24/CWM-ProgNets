@@ -1,0 +1,36 @@
+# !/usr/bin/python3
+import numpy as np
+import matplotlib.pyplot as plt
+
+# parameters to modify
+filename="iperf_3.data"
+label='bandwidth'
+xlabel = 'Time (s)'
+ylabel = 'Sample Bandwidth'
+title='Ping speed server side (pi)'
+fig_name='iperf_3_server_graph.png'
+bins=100 #adjust the number of bins to your plot
+
+
+t = np.loadtxt(filename, delimiter=" ", dtype="float")
+
+
+numbList = []
+for i in range(0,10):
+	numbList.append(i+0.5)   #Because the data is between seconds, I'll plot the average value of that time range
+	
+t_2 = []
+for i in range(10):
+	t_2.append(t[i])
+
+
+plt.plot(numbList, t_2, label=label)  # Plot some data on the (implicit) axes.
+#Comment the line above and uncomment the line below to plot a CDF
+#plt.hist(t[:,1], bins, density=True, histtype='step', cumulative=True, label=label)
+
+plt.xlabel(xlabel)
+plt.ylabel(ylabel)
+plt.title(title)
+plt.legend()
+plt.savefig(fig_name)
+plt.show()
