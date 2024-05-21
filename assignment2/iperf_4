@@ -1,0 +1,145 @@
+100K:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 117600.00 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 35749 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec  63.2 KBytes   103 Kbits/sec
+[  1] 0.0000-5.1748 sec  66.0 KBytes   105 Kbits/sec
+[  1] Sent 47 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-5.1745 sec  66.0 KBytes   105 Kbits/sec   0.004 ms 0/46 (0%)
+
+
+1m:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 11760.00 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 59696 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   613 KBytes  1.00 Mbits/sec
+[  1] 0.0000-5.0217 sec   616 KBytes  1.00 Mbits/sec
+[  1] Sent 430 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-5.0214 sec   616 KBytes  1.00 Mbits/sec   0.002 ms 0/429 (0%)
+
+100m:
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 117.60 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 34734 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec  59.6 MBytes   100 Mbits/sec
+[  1] 0.0000-5.0002 sec  59.6 MBytes   100 Mbits/sec
+[  1] Sent 42522 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-4.9999 sec  59.6 MBytes   100 Mbits/sec   0.006 ms 0/42521 (0%)
+
+
+-----------------------------
+750m:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 15.68 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 46490 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   447 MBytes   750 Mbits/sec
+[  1] 0.0000-5.0001 sec   447 MBytes   750 Mbits/sec
+[  1] Sent 318886 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-4.9998 sec   447 MBytes   750 Mbits/sec   0.019 ms 77/318885 (0.024%)
+
+
+800m:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 14.70 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 60786 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   477 MBytes   800 Mbits/sec
+[  1] 0.0000-5.0001 sec   477 MBytes   800 Mbits/sec
+[  1] Sent 340146 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-4.9998 sec   476 MBytes   799 Mbits/sec   0.021 ms 306/340145 (0.09%)
+
+
+850m:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 13.84 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 45348 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   507 MBytes   850 Mbits/sec
+[  1] 0.0000-5.0001 sec   507 MBytes   850 Mbits/sec
+[  1] Sent 361402 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-4.9997 sec   427 MBytes   717 Mbits/sec   0.020 ms 56586/361401 (16%)
+
+
+900m:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 13.07 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 59950 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   536 MBytes   900 Mbits/sec
+[  1] 0.0000-5.0001 sec   536 MBytes   900 Mbits/sec
+[  1] Sent 382658 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-4.9997 sec   323 MBytes   541 Mbits/sec   0.023 ms 152556/382657 (40%)
+
+
+1g:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 11.76 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 43734 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   570 MBytes   957 Mbits/sec
+[  1] 0.0000-5.0002 sec   570 MBytes   957 Mbits/sec
+[  1] Sent 406935 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-5.0162 sec   340 MBytes   568 Mbits/sec   0.945 ms 164474/406935 (40%)
+
+
+
+
+10g:
+------------------------------------------------------------
+Client connecting to 192.168.10.2, UDP port 5001
+Sending 1470 byte datagrams, IPG target: 1.18 us (kalman adjust)
+UDP buffer size:  208 KByte (default)
+------------------------------------------------------------
+[  1] local 192.168.10.1 port 43659 connected with 192.168.10.2 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  1] 0.0000-5.0000 sec   570 MBytes   957 Mbits/sec
+[  1] 0.0000-5.0003 sec   570 MBytes   957 Mbits/sec
+[  1] Sent 406934 datagrams
+[  1] Server Report:
+[ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+[  1] 0.0000-5.0172 sec   318 MBytes   531 Mbits/sec   1.068 ms 180352/406934 (44%)
+
+

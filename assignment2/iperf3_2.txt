@@ -1,0 +1,66 @@
+100k:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 36425 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec  62.2 KBytes   102 Kbits/sec  44  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec  62.2 KBytes   102 Kbits/sec  0.000 ms  0/44 (0%)  sender
+[  5]   0.00-5.04   sec  62.2 KBytes   101 Kbits/sec  0.010 ms  0/44 (0%)  receiver
+
+1m:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 35907 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec   611 KBytes  1.00 Mbits/sec  432  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec   611 KBytes  1.00 Mbits/sec  0.000 ms  0/432 (0%)  sender
+[  5]   0.00-5.04   sec   611 KBytes   993 Kbits/sec  0.006 ms  0/432 (0%)  receiver
+
+100m:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 56937 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec  59.6 MBytes   100 Mbits/sec  43157  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec  59.6 MBytes   100 Mbits/sec  0.000 ms  0/43157 (0%)  sender
+[  5]   0.00-5.04   sec  59.6 MBytes  99.2 Mbits/sec  0.010 ms  0/43157 (0%)  receiver
+
+
+900m:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 45563 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec   536 MBytes   900 Mbits/sec  388414  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec   536 MBytes   900 Mbits/sec  0.000 ms  0/388414 (0%)  sender
+[  5]   0.00-5.04   sec   536 MBytes   892 Mbits/sec  0.010 ms  0/388414 (0%)  receiver
+
+-------------------------------------------------------------------
+
+1g:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 36462 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec   570 MBytes   956 Mbits/sec  412795  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec   570 MBytes   956 Mbits/sec  0.000 ms  0/412795 (0%)  sender
+[  5]   0.00-5.04   sec   554 MBytes   921 Mbits/sec  0.018 ms  11661/412767 (2.8%)  receiver
+
+
+
+10g:
+Connecting to host 192.168.10.2, port 5201
+[  5] local 192.168.10.1 port 45263 connected to 192.168.10.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-5.00   sec   570 MBytes   957 Mbits/sec  412857  
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-5.00   sec   570 MBytes   957 Mbits/sec  0.000 ms  0/412857 (0%)  sender
+[  5]   0.00-5.04   sec   136 MBytes   227 Mbits/sec  0.110 ms  313950/412589 (76%)  receiver
+
+
