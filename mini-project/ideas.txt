@@ -1,0 +1,35 @@
+Capture the flag:
+Both teams have a half of a pitch. If a player is touched by a player of the other team on the other side of the pitch, they are caught and are out of the game.
+
+
+
+Players have fixed speeds, fixed teams and the bounds are fixed.
+Values to be updated:
+	- Location
+	- Out of game
+	- In chase
+
+- on a grid - compare squares to see if chase
+
+Messages:
+- Player new location --> update their location --> 'Check nearby' on all opposite team members who aren't 'in chase'
+
+- Check nearby --> Checks if someone is within 5m of someone on the opposite teamn --> 'Chase'
+
+- Chase --> compare speed --> 'check side', if the slower one is on the wrong side --> 'Update chase' --> wait speed1-speed2 seconds --> update chase and the slower player is out
+
+- Update Chase --> flips their 'in chase' attribute
+
+- Check side --> Check if they are on their team's half
+
+- Is player out of the game?
+
+- Who is winning (has the most players in the game)?
+
+
+
+Setps:
+1. Read a message and decode the header - queery 1 or queery 2
+
+
+6. Two players, each who move in a straight line
