@@ -2,34 +2,44 @@ Capture the flag:
 Both teams have a half of a pitch. If a player is touched by a player of the other team on the other side of the pitch, they are caught and are out of the game.
 
 
+ * The Protocol header looks like this:
+ *
+ *        0                1                  2              3
+ * +----------------+----------------+----------------+---------------+
+ * |                |                |     Version    |      Op       |
+ * +----------------+----------------+----------------+---------------+
+ * |            X-Location           |           Y-Location           |
+ * +----------------+----------------+----------------+---------------+
+ * |                          Player assignment                       |
+ * +----------------+----------------+----------------+---------------+
+ * |                              Result                              |
+ * +----------------+----------------+----------------+---------------+
 
-Players have fixed speeds, fixed teams and the bounds are fixed.
-Values to be updated:
-	- Location
-	- Out of game
-	- In chase
-
-- on a grid - compare squares to see if chase
-
-Messages:
-- Player new location --> update their location --> 'Check nearby' on all opposite team members who aren't 'in chase'
-
-- Check nearby --> Checks if someone is within 5m of someone on the opposite teamn --> 'Chase'
-
-- Chase --> compare speed --> 'check side', if the slower one is on the wrong side --> 'Update chase' --> wait speed1-speed2 seconds --> update chase and the slower player is out
-
-- Update Chase --> flips their 'in chase' attribute
-
-- Check side --> Check if they are on their team's half
-
-- Is player out of the game?
-
-- Who is winning (has the most players in the game)?
+X-location on a grid of 0 to 20
+Y-location on a grid of 0 to 10
+Op -see below
+Player assignment - out(1/0)|team(1|0)|unique number
+Result - what happens because of this action
 
 
 
-Setps:
-1. Read a message and decode the header - queery 1 or queery 2
+Operations:
+- Player new location --> update their location --> Checks if any players are nearby - returns assignment of all adjacent players not on the same team and in play (mask assignment past the first two bits)
+
+- Player out --> change their assignment to have a 1 first not a 0, return 'caught' 
+
+- Player Chase --> If they are adjacent to a mamber of the opposite team and their location is on their own half, return other player asignment +'caught'
+
+- Matchstate --> returns a 20x10 grid of txt displaying locations:
+-X-----Y--|----------
+----------|-X--------
+----------|----------
+----------|----------
+----------|----------
+-------Y--|----------
+----------|---X------
+---Y------|----------
+----------|----------
+----------|----------
 
 
-6. Two players, each who move in a straight line
