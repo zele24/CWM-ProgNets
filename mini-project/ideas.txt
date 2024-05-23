@@ -2,44 +2,83 @@ Capture the flag:
 Both teams have a half of a pitch. If a player is touched by a player of the other team on the other side of the pitch, they are caught and are out of the game.
 
 
+Secret movement game: Randomly assign player locations on their half of pitch.
+Take it in turns to either move a player, check around a player or capture the flag with a player. You have to be adjacent to the flag square to capture it.
+
+Set up: Initialise
+Player 1 gets team A , and writes two move commands to place them initially. Repeat with player two and team B (00000010 and 00000011)
+Take it in turns to move, check, capture etc..
+When one player has captured, the other player is alerted and has one move and one capture action. Otherwise, the first player can win.
+
+
  * The Protocol header looks like this:
  *
  *        0                1                  2              3
  * +----------------+----------------+----------------+---------------+
- * |                |                |     Version    |      Op       |
+ * |   Player In    |      Team      |    Has Flag    |      Op       |
  * +----------------+----------------+----------------+---------------+
  * |            X-Location           |           Y-Location           |
  * +----------------+----------------+----------------+---------------+
- * |                          Player assignment                       |
+ * |   Assignment   |                      Result                     |
  * +----------------+----------------+----------------+---------------+
  * |                              Result                              |
  * +----------------+----------------+----------------+---------------+
 
-X-location on a grid of 0 to 20
-Y-location on a grid of 0 to 10
-Op -see below
-Player assignment - out(1/0)|team(1|0)|unique number
+player in - 0 if out, 1 if in
+team - 0 if team A, 1 if team B
+has flag - 0 if doesn't have flag, 1 if does have flag
+X-location on a grid of 0 to 10
+Y-location on a grid of 0 to 5
+Op - see below
+Player assignment - unique number
 Result - what happens because of this action
+
+
+Team A (00000000) = (00000000 and 00000001)
+Team B (00000001) = (00000010 and 00000011)
 
 
 
 Operations:
-- Player new location --> update their location --> Checks if any players are nearby - returns assignment of all adjacent players not on the same team and in play (mask assignment past the first two bits)
+'I': Initialise - set all default values in the registers
 
-- Player out --> change their assignment to have a 1 first not a 0, return 'caught' 
+'M': Player new location --> update their location, return??
 
-- Player Chase --> If they are adjacent to a mamber of the opposite team and their location is on their own half, return other player asignment +'caught'
+# Player out --> change their assignment to have a 1 first not a 0, return 'caught' 
 
-- Matchstate --> returns a 20x10 grid of txt displaying locations:
--X-----Y--|----------
-----------|-X--------
-----------|----------
-----------|----------
-----------|----------
--------Y--|----------
-----------|---X------
----Y------|----------
-----------|----------
-----------|----------
+'C': Player Check --> If they are adjacent to a member of the opposite team, return other player asignment and catches them (if multiple are adjacent, only the 1st player is caught, as you can't catch multiple people in one go)
 
+'F': Player capture --> If they are adjacent to the flag, their 'has flag' becomes 1, return 'success'
+
+'W': Player win --> If a player has the flag and is in play, return 'Win'
+
+****'S': Matchstate --> returns a 10x5 grid of txt displaying locations:
+	As you can only return a single character/number, I will submit the binary of a number that in base 4 would give:
+
+0100000000
+0000000200
+3000000003
+0000010000
+0020000000
+
+where 1 is team A players, 2 is team B players and 3 are the flag locations
+
+
+
+
+
+Pitch:
+A = A flag
+B = B flag
+  x0123456789
+
+4  0000000000
+3  0000000000
+2  B00000000A
+1  0000000000
+0  0000000000
+y
+
+
+If I have time: have 2 python files, each send from a differnt MAC address so two people play and computer can detrect whose turn it is, not just dependent on the player that's being controlled
 
