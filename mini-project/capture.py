@@ -13,6 +13,7 @@ class Player(Packet):
                     StrFixedLenField("op", "M", length=1),
                     IntField("X-Location", 0),
                     IntField("Y-Location", 0),
+                    IntField("Assignment", 0),
                     IntField("result", 0xDEADBABE)]
 
 bind_layers(Ether, Player, type=0x1234)
@@ -68,6 +69,7 @@ def get_if():
 
 def main():
 
+##Check what p does and whether order for it matters
     p = make_seq(num_parser, make_seq(op_parser,num_parser))
     s = ''
     #iface = get_if()
@@ -80,9 +82,17 @@ def main():
         print(s)
         try:
             i,ts = p(s,0,[])
-            pkt = Ether(dst='00:04:00:00:00:00', type=0x1234) / Player(op=ts[1].value,
-                                              operand_a=int(ts[0].value),
-                                              operand_b=int(ts[2].value))
+            
+            if len(ts) == 1:
+            	ts.append(0);
+            if len(ts) == 2:
+            	ts.append(0);
+            	ts.append(0);
+            
+            pkt = Ether(dst='00:04:00:00:00:00', type=0x1234) / Player(op=ts[0].value,
+                                              Assignment=int(ts[1].value),
+                                              X-Location=int(ts[2].value),
+                                              Y-Location=int(ts[3].value)
 
             pkt = pkt/' '
 

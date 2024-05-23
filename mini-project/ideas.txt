@@ -37,7 +37,12 @@ Result - what happens because of this action
 Team A (00000000) = (00000000 and 00000001)
 Team B (00000001) = (00000010 and 00000011)
 
-
+Input format:
+> M 01 0 2
+> I 
+> C 11
+> F 10
+> W 10
 
 Operations:
 'I': Initialise - set all default values in the registers
