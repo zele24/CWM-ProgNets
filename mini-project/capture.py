@@ -9,10 +9,10 @@ class Player(Packet):
     #setting default values
     fields_desc = [ IntField("PlayerIn", 1),
                     IntField("Team", 0),
-                    IntField("HasFlag", 0)
+                    IntField("HasFlag", 0),
                     StrFixedLenField("op", "M", length=1),
-                    IntField("X-Location", 0),
-                    IntField("Y-Location", 0),
+                    IntField("X_Location", 0),
+                    IntField("Y_Location", 0),
                     IntField("Assignment", 0),
                     IntField("result", 0xDEADBABE)]
 
@@ -70,40 +70,50 @@ def get_if():
 def main():
 
 ##Check what p does and whether order for it matters
-    p = make_seq(num_parser, make_seq(op_parser,num_parser))
+    p = make_seq(op_parser, make_seq(num_parser,make_seq(num_parser,num_parser)))
     s = ''
-    #iface = get_if()
+    ##iface = get_if()
     iface = "enx0c37965f8a26"
+    print(iface)
 
     while True:
+        print('True in')
         s = input('> ')
         if s == "quit":
             break
         print(s)
         try:
             i,ts = p(s,0,[])
+            print(ts, len(ts))
+            
             
             if len(ts) == 1:
             	ts.append(0);
+            	
             if len(ts) == 2:
             	ts.append(0);
             	ts.append(0);
             
+            	
+            
             pkt = Ether(dst='00:04:00:00:00:00', type=0x1234) / Player(op=ts[0].value,
                                               Assignment=int(ts[1].value),
-                                              X-Location=int(ts[2].value),
-                                              Y-Location=int(ts[3].value)
+                                              X_Location=int(ts[2].value),
+                                              Y_Location=int(ts[3].value))
 
+            print(pkt)
+            print('Hello')
+                                              
             pkt = pkt/' '
 
             #pkt.show()
             resp = srp1(pkt, iface=iface,timeout=5, verbose=False)
             if resp:
-                Player=resp[Player]
-                if Player:
-                    print(Player.result)
+                player=resp[Player]
+                if player:
+                    print(player.result)
                 else:
-                    print("cannot find Player header in the packet")
+                    print("Cannot find Player header in the packet")
             else:
                 print("Didn't receive response")
         except Exception as error:
@@ -112,5 +122,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
