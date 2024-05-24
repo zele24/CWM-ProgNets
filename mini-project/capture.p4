@@ -424,9 +424,7 @@ I don't care about the mac addresses, just sending it back
     	
     	if (diffY1 == 0) {
     	  sameY1 = 1;
-    	} else {
-    	  sameY1 = 0;
-    	}
+    	} 
     	if (diffY1 == 1) {
     	  sameY1 = 1;
     	} 
