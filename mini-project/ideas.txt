@@ -34,8 +34,8 @@ Player assignment - unique number
 Result - what happens because of this action
 
 
-Team A (00000000) = (00000000 and 00000001)
-Team B (00000001) = (00000010 and 00000011)
+Team A (0) = (0 and 1)
+Team B (1) = (2 and 3)
 
 Input format:
 > M 01 0 2
@@ -47,9 +47,9 @@ Input format:
 Operations:
 'I': Initialise - set all default values in the registers
 
-'M': Player new location --> update their location, return??
+'M': Player new location --> update their location, 
 
-# Player out --> change their assignment to have a 1 first not a 0, return 'caught' 
+
 
 'C': Player Check --> If they are adjacent to a member of the opposite team, return other player asignment and catches them (if multiple are adjacent, only the 1st player is caught, as you can't catch multiple people in one go)
 

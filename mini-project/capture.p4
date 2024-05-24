@@ -5,7 +5,7 @@
  * +----------------+----------------+----------------+---------------+
  * |            X-Location           |           Y-Location           |
  * +----------------+----------------+----------------+---------------+
- * |   Assignment   |                      Result                     |
+ * |                             Assignment                           |
  * +----------------+----------------+----------------+---------------+
  * |                              Result                              |
  * +----------------+----------------+----------------+---------------+
@@ -52,7 +52,7 @@ const bit<8> PLAYER_B = 00000001; // B
 const bit<8> PLAYER_IN = 0x30; // 0
 
 //operations
-const bit<8> PLAYER_MOVE = 0x4D; // 'M'
+const bit<8> PLAYER_MOVE = 0x4d; // 'M'
 const bit<8> PLAYER_CHECK = 0x43; // 'C'
 const bit<8> PLAYER_CAPT = 0x46; // 'F'
 const bit<8> PLAYER_WIN = 0x57; // 'W'
@@ -80,8 +80,8 @@ header player_t {
     bit<8>  op;
     bit<16>  x_loc;
     bit<16>  y_loc;
-    bit<8>  ass;
-    bit<56>  res;
+    bit<32>  ass;
+    bit<32>  res;
 
 }
  
@@ -108,21 +108,21 @@ parser MyParser(packet_in packet,
     state start {
         packet.extract(hdr.ethernet);
         transition select(hdr.ethernet.etherType) {
-            PLAYER_ETYPE : check_player;
+            PLAYER_ETYPE : parse_player;
             default      : accept;
         }
     }
 
-    state check_player {
-   /* Seemingly all this does is check ehat the 1st header is 'P' the second is '4' and the third is the version
-        transition select(packet.lookahead<player_t>().P,
-        packet.lookahead<player_t>().four,
-        packet.lookahead<player_t>().ver) {
-            (P4CALC_P, P4CALC_4, P4CALC_VER) : parse_p4calc;
-            */
-            //default                          : accept;
+   /* state check_player {
+    Seemingly all this does is check ehat the 1st header is 'P' the second is '4' and the third is the version
+        transition select(packet.lookahead<player_t>().ingame,
+        packet.lookahead<player_t>().team,
+        packet.lookahead<player_t>().flag) {
+            (PLAYER_MOVE, PLAYER_CHECK, PLAYER_CAPT) : parse_player;
+            
+            default                          : accept;
         }
-        
+        }*/
     
 
     state parse_player {
@@ -149,32 +149,34 @@ control MyIngress(inout headers hdr,
                   inout metadata meta,
                   inout standard_metadata_t standard_metadata) {
     
-    action send_back(bit<56> result) {
+    action send_back(bit<32> result) {
   
   //bit<8> playing, bit<8> hasflag, bit<16> X, bit<16> Y, from the input to the function, but we only need to send back the result, all the rest is on our side
          hdr.player.res = result;
+
+/*
+I don't care about the mac addresses, just sending it back
 
          macAddr_t tmp_mac;
          tmp_mac = hdr.ethernet.dstAddr;
          hdr.ethernet.dstAddr = hdr.ethernet.srcAddr;
          hdr.ethernet.srcAddr = tmp_mac;
+*/
          
          standard_metadata.egress_spec = standard_metadata.ingress_port;
-         
+ 
+ 
+        
     }
 
     action operation_move() {
     	
     	//defining temp variables to carry the values from the registers, then writing the new x and y locations of the player into the correct position in the register
     	
+   	
     	bit<16> X;
     	bit<16> Y;
-    	
-    	/*
-    	location_t X;
-    	location_t Y;
-    	*/
-    	
+      	    	
     	bit<32> index;
     	index = (bit<32>) hdr.player.ass;
     	X = hdr.player.x_loc;
@@ -182,11 +184,116 @@ control MyIngress(inout headers hdr,
     	rx.write(index, X);
     	ry.write(index, Y);
     	
-    	bit<56> message;
-    	message = 0x4D;  //Returns the letter 'M' for moved
+ 
+    	
+    	bit<32> message;
+    	message = 0x73777368;  //Returns the letter swsh
     
         send_back(message);
+        //hdr.player.res = message;
+        //standard_metadata.egress_spec = standard_metadata.ingress_port;
+ 
     }
+    
+    action operation_state() {
+    	
+    //Gives you the player you requested's locations   	
+   	
+   	bit<16> X;
+    	bit<16> Y;
+    	bit<32> index;
+    	index = (bit<32>) hdr.player.ass;
+    	rx.read(X, index);
+    	ry.read(Y, index);
+   	
+   	
+    	
+    	bit<32> message;
+    	bit<16> hexX;
+    	bit<8> hexY;
+    	
+    	hexX = 0;
+    	hexY = 0;
+    	
+    	// I have to convert the X and Y coordinated but can't just concatinate the digits
+    	
+    	if (X == 0) {
+    	  hexX = 0x302C;
+    	}
+    	if (X == 1) {
+    	  hexX = 0x312C;
+    	}
+    	if (X == 2) {
+    	  hexX = 0x322C;
+    	}
+    	if (X == 3) {
+    	  hexX = 0x332C;
+    	}
+    	if (X == 4) {
+    	  hexX = 0x342C;
+    	}
+    	if (X == 5) {
+    	  hexX = 0x352C;
+    	}
+    	if (X == 6) {
+    	  hexX = 0x362C;
+    	}
+    	if (X == 7) {
+    	  hexX = 0x372C;
+    	}
+    	if (X == 8) {
+    	  hexX = 0x382C;
+    	}
+    	if (X == 9) {
+    	  hexX = 0x392C;
+    	}
+    	
+    	if (Y == 0) {
+    	  hexY = 0x30;
+    	}
+    	if (Y == 1) {
+    	  hexY = 0x31;
+    	}
+    	if (Y == 2) {
+    	  hexY = 0x32;
+    	}
+    	if (Y == 3) {
+    	  hexY = 0x33;
+    	}
+    	if (Y == 4) {
+    	  hexY = 0x34;
+    	}
+    	
+    	
+
+    	bit<8> still;
+    	bit<8> alive;
+    	inPlay.read(still, index);
+    	alive = 0x2b;
+    	
+    	if (still == 1) {
+    	  alive = 0x2b;
+    	}
+    	if (still == 0) {
+    	  alive = 0x78;
+    	}    	
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+    	message = hexX ++ hexY ++ alive;
+    	
+    	
+    
+        send_back(message);
+        //hdr.player.res = message;
+        //standard_metadata.egress_spec = standard_metadata.ingress_port;
+ 
+    }
+
 
     action operation_check() {
     	
@@ -237,14 +344,26 @@ control MyIngress(inout headers hdr,
     	bit<1> sameY1;
     	bit<1> sameY2;
     	
-    	bit<56> message;
+    	bit<32> message;
     	
     	    	
-    	//Comparing locations
-    	bit <16> diffX1;
-    	bit <16> diffY1;
-    	bit <16> diffX2;
-    	bit <16> diffY2;
+    	//Comparing locations, don't do negative!!!
+    	bit<16> diffX1;
+    	bit<16> diffY1;
+    	bit<16> diffX2;
+    	bit<16> diffY2;
+    	
+    	if (X1 > X) {
+    	  diffX1 = X1 - X;
+    	}
+    	if (X1 > X) {
+    	  diffX1 = X1 - X;
+    	}
+    	//////////////Continue this code
+
+    	
+    	
+    	
     	
     	diffX1 = X1 - X;
     	diffX2 = X2 - X;
@@ -262,13 +381,32 @@ control MyIngress(inout headers hdr,
     	  sameX1 = 0;
     	}
 
+    	if (diffX1 == 1) {
+    	  sameX1 = 1;
+    	} else {
+    	  sameX1 = 0;
+    	}
+
+
+
     	if (diffX2 == 0) {
     	  sameX2 = 1;
     	} else {
     	  sameX2 = 0;
     	}
     	
+    	if (diffX2 == 1) {
+    	  sameX2 = 1;
+    	} else {
+    	  sameX2 = 0;
+    	}
+    	
     	if (diffY1 == 0) {
+    	  sameY1 = 1;
+    	} else {
+    	  sameY1 = 0;
+    	}
+    	if (diffY1 == 1) {
     	  sameY1 = 1;
     	} else {
     	  sameY1 = 0;
@@ -280,20 +418,26 @@ control MyIngress(inout headers hdr,
     	  sameY2 = 0;
     	}
     	
+    	if (diffY2 == 1) {
+    	  sameY2 = 1;
+    	} else {
+    	  sameY2 = 0;
+    	}
+    	
     	
     	
     	const bit<8> outgame = 0;
     	
     	if (sameX1 == 1) {
     	  if (sameY1 == 1) {
-    	  message = (bit<56>)P1;    //Returns the player number who got caught
+    	  message = (bit<32>)P1;    //Returns the player number who got caught
     	  //inPlay.write(P1, outgame);
     	  } else {
     	    message = 0x43; //returns 'C' for clear
     	  }
     	} else if (sameX2 == 1) {
     	    if (sameY2 == 1) {
-    	      message = (bit<56>)P2;    //Returns player 2 only if they're adjacent and player 1 isn't
+    	      message = (bit<32>)P2;    //Returns player 2 only if they're adjacent and player 1 isn't
     	      //inPlay.write(P2, outgame);
     	  } else {
     	    message = 0x43; //returns 'C' for clear
@@ -312,15 +456,6 @@ control MyIngress(inout headers hdr,
     	
     	//making all players as in and not with flag
     	
-    	/*const bit<8> inGame = 00000001;
-    	const bit<8> flagless = 00000000;
-    	const bit<8> teamA = 00000000;
-    	const bit<8> teamB = 00000001;
-    	const bit<8> A1 = 00000000;
-    	const bit<8> A2 = 00000001;
-    	const bit<8> B1 = 00000010;
-    	const bit<8> B2 = 00000011;*/
-
     	const bit<8> inGame = 1;
     	const bit<8> flagless = 0;
     	const bit<8> teamA = 0;
@@ -341,7 +476,7 @@ control MyIngress(inout headers hdr,
     	Flag.write(B2, flagless);
         	
     	
-    	bit<56> message;
+    	bit<32> message;
     	message = 0x49;  //Returns the letter 'I' for initialised
     
         send_back(message);
@@ -352,13 +487,8 @@ control MyIngress(inout headers hdr,
     	//checks player's team, then checks if they are adjacent to the other team's flag
     	
 
-    	
-    	/*location_t X;
-    	location_t Y;*/
     	bit <16> X;
     	bit <16> Y;
-    	
-    	
     	
     	bit<32> index;
     	bit<8> activeTeam;
@@ -371,8 +501,7 @@ control MyIngress(inout headers hdr,
     	rx.read(X, index);
     	ry.read(Y, index);
     	
-    	/*location_t Fx;
-    	location_t Fy;*/
+    
     	bit <16> Fx;
     	bit <16> Fy;
     	
@@ -388,7 +517,9 @@ control MyIngress(inout headers hdr,
     	
     	bit<2> sameX;
     	bit<2> sameY;
-    	bit<56> message;
+    	bit<32> message;
+    	
+    	
     	
     	//Comparing locations
     	if (Fx-X == 0) {
@@ -429,7 +560,7 @@ control MyIngress(inout headers hdr,
     	if (sameX == 1) {
     	  if (sameY == 1) {
     	    //Flag.write(index, 1);
-    	    message = 0x43; //returns 'C' for captured
+    	    message = 0x54616721; //returns 'Tag!'
     	} else {
     	  message = 0x46; //returns 'F' for failed
     	} 
@@ -459,17 +590,18 @@ control MyIngress(inout headers hdr,
             operation_check;
             operation_capture;
             //operation_win;
-            //operation_state;
+            operation_state;
             operation_init;
             operation_drop;
         }
         const default_action = operation_drop();
         const entries = {
             PLAYER_MOVE : operation_move();
+            
             PLAYER_CHECK: operation_check();
             PLAYER_CAPT : operation_capture();
             //PLAYER_WIN  : operation_win();
-            //PLAYER_STATE: operation_state();
+            PLAYER_STATE: operation_state();
             PLAYER_INIT : operation_init();
         }
     }
@@ -479,10 +611,21 @@ control MyIngress(inout headers hdr,
     // performs the operation if it is one of the ones listed, else it drops the packet
         if (hdr.player.isValid()) {
             calculate.apply();
+            /*
+            if (hdr.player.op == PLAYER_MOVE) {
+            hdr.player.res = 40;
+            } else {
+            hdr.player.res =404;
+            }
+            standard_metadata.egress_spec = standard_metadata.ingress_port;       
+        */
         } else {
             operation_drop();
         }
+        
+        //standard_metadata.egress_spec = standard_metadata.ingress_port; 
     }
+    
 }
  
  

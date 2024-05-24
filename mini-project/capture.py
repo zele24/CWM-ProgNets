@@ -1,20 +1,29 @@
 #!/usr/bin/env python3
 
 import re
+import binascii
 
 from scapy.all import *
 
 class Player(Packet):
     name = "Player"
     #setting default values
-    fields_desc = [ IntField("PlayerIn", 1),
-                    IntField("Team", 0),
-                    IntField("HasFlag", 0),
+    fields_desc = [ ByteField("PlayerIn", 1),
+                    ByteField("Team", 0),
+                    ByteField("HasFlag", 0),
                     StrFixedLenField("op", "M", length=1),
-                    IntField("X_Location", 0),
-                    IntField("Y_Location", 0),
+                    
+                    ShortField("X_Location", 0),
+                    ShortField("Y_Location", 0),
+                    
                     IntField("Assignment", 0),
                     IntField("result", 0xDEADBABE)]
+'''
+ShortField() = 16bits
+ByteField() = 8bits
+'''
+
+
 
 bind_layers(Ether, Player, type=0x1234)
 
@@ -77,41 +86,64 @@ def main():
     print(iface)
 
     while True:
-        print('True in')
         s = input('> ')
         if s == "quit":
             break
-        print(s)
+        #print(s)
         try:
             i,ts = p(s,0,[])
-            print(ts, len(ts))
-            
+                       
             
             if len(ts) == 1:
-            	ts.append(0);
+            	ts.append(0)
             	
             if len(ts) == 2:
-            	ts.append(0);
-            	ts.append(0);
+            	ts.append(0)
+            	ts.append(0)
             
-            	
+            if int(ts[1].value) == 0:
+            	team = 0
+            elif int(ts[1].value) == 1:
+            	team = 0
+            elif int(ts[1].value) == 2:
+            	team = 1
+            elif int(ts[1].value) == 3:
+            	team = 1
+            else:
+            	team = 2
             
-            pkt = Ether(dst='00:04:00:00:00:00', type=0x1234) / Player(op=ts[0].value,
+            
+            
+            pkt = Ether(dst='00:04:00:00:00:00', type=0x1234) / Player(op=(ts[0].value),
                                               Assignment=int(ts[1].value),
                                               X_Location=int(ts[2].value),
-                                              Y_Location=int(ts[3].value))
+                                              Y_Location=int(ts[3].value),
+                                              Team=int(team))
 
-            print(pkt)
-            print('Hello')
+            
                                               
             pkt = pkt/' '
 
-            #pkt.show()
+            pkt.show()
+            #xxx = pkt[Player]
+            #print(xxx.op)
+            
+            
             resp = srp1(pkt, iface=iface,timeout=5, verbose=False)
+            
             if resp:
                 player=resp[Player]
+                
+                #player.show()
+                
                 if player:
-                    print(player.result)
+                    #print('raw:', player.result)
+                    messageHex = str(hex(int(player.result)))
+                    messageHex = messageHex.split('x')
+                    messageHex = messageHex[1]
+                    messageBin = binascii.a2b_hex(messageHex)
+                    message = messageBin.decode("utf-8")
+                    print(message)
                 else:
                     print("Cannot find Player header in the packet")
             else:
