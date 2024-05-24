@@ -38,11 +38,11 @@ Team A (0) = (0 and 1)
 Team B (1) = (2 and 3)
 
 Input format:
-> M 01 0 2
+> M 1 0 2
 > I 
-> C 11
-> F 10
-> W 10
+> C 3
+> F 2
+> W 0
 
 Operations:
 'I': Initialise - set all default values in the registers
@@ -57,16 +57,10 @@ Operations:
 
 'W': Player win --> If a player has the flag and is in play, return 'Win'
 
-****'S': Matchstate --> returns a 10x5 grid of txt displaying locations:
-	As you can only return a single character/number, I will submit the binary of a number that in base 4 would give:
+'S': Status --> returns the location and in/out status of the requested player
 
-0100000000
-0000000200
-3000000003
-0000010000
-0020000000
+'A': All -> prints out everything about the player in question
 
-where 1 is team A players, 2 is team B players and 3 are the flag locations
 
 
 

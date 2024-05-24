@@ -49,12 +49,12 @@ def num_parser(s, i, ts):
 
 # Checks if the input is one of the allowable operations
 def op_parser(s, i, ts):
-    pattern = "^\s*([MCFWSI])\s*"
+    pattern = "^\s*([AMCFWSI])\s*"
     match = re.match(pattern,s[i:])
     if match:
         ts.append(Token('num', match.group(1)))
         return i + match.end(), ts
-    raise NumParseError("Expected capitalised operator 'M', 'C', 'F', 'W', 'S' or 'I'.")
+    raise NumParseError("Expected capitalised operator 'M', 'C', 'F', 'W', 'A', 'S' or 'I'.")
 
 
 def make_seq(p1, p2):
@@ -83,23 +83,25 @@ def main():
     s = ''
     ##iface = get_if()
     iface = "enx0c37965f8a26"
-    print(iface)
+    
 
     while True:
         s = input('> ')
         if s == "quit":
             break
+            
+            ##Making sure all input fields are filled enev when it doesn't matter
+        if len(s) == 1:
+            s = s + ' 0' + ' 0' + ' 0'
+            	
+        if len(s) == 3:
+            s = s + ' 0' + ' 0'
         #print(s)
         try:
             i,ts = p(s,0,[])
                        
             
-            if len(ts) == 1:
-            	ts.append(0)
-            	
-            if len(ts) == 2:
-            	ts.append(0)
-            	ts.append(0)
+            ##Setting the team of the controller based on which player is input
             
             if int(ts[1].value) == 0:
             	team = 0
@@ -124,7 +126,7 @@ def main():
                                               
             pkt = pkt/' '
 
-            pkt.show()
+            #pkt.show()
             #xxx = pkt[Player]
             #print(xxx.op)
             
@@ -137,13 +139,21 @@ def main():
                 #player.show()
                 
                 if player:
-                    #print('raw:', player.result)
-                    messageHex = str(hex(int(player.result)))
+                    raw = player.result
+                    #print('raw:', raw)
+                    
+                    messageHex = str(hex(int(raw)))
                     messageHex = messageHex.split('x')
                     messageHex = messageHex[1]
                     messageBin = binascii.a2b_hex(messageHex)
                     message = messageBin.decode("utf-8")
+                    
                     print(message)
+                    
+                    
+                    if str(ts[0].value) == 'A':
+                        player.show()
+                    
                 else:
                     print("Cannot find Player header in the packet")
             else:

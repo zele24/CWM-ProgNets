@@ -58,6 +58,7 @@ const bit<8> PLAYER_CAPT = 0x46; // 'F'
 const bit<8> PLAYER_WIN = 0x57; // 'W'
 const bit<8> PLAYER_STATE = 0x53; // 'S'
 const bit<8> PLAYER_INIT = 0x49; // 'I'
+const bit<8> PLAYER_ALL = 0x41; //'A'
 
 
 /* Registers to store changing values
@@ -190,10 +191,11 @@ I don't care about the mac addresses, just sending it back
     	message = 0x73777368;  //Returns the letter swsh
     
         send_back(message);
-        //hdr.player.res = message;
-        //standard_metadata.egress_spec = standard_metadata.ingress_port;
+        
  
     }
+    
+    
     
     action operation_state() {
     	
@@ -308,17 +310,24 @@ I don't care about the mac addresses, just sending it back
     	//Defining variables for the assignments of the other team's players
     	bit<32> P1;
     	bit<32> P2;
+    	//This is needed to define an ascii version of their number for the feedback comment
+    	bit<8> Pcaught1;
+    	bit<8> Pcaught2;
     	
     	//Getting the player's team
     	bit<32> side;
     	side = (bit<32>) hdr.player.team;
     	if (side == 0) {
     	  P1 = 2;
+    	  Pcaught1 = 0x32;
     	  P2 = 3;
+    	  Pcaught2 = 0x33;
     	
     	} else {
     	  P1 = 0;
+    	  Pcaught1 = 0x30;
     	  P2 = 1;
+    	  Pcaught2 = 0x31;
     	}
     	
     	//We now need to read all the locations of players of the opposite team and see if any are on the same spot or adjacent
@@ -344,6 +353,13 @@ I don't care about the mac addresses, just sending it back
     	bit<1> sameY1;
     	bit<1> sameY2;
     	
+    	sameX1 = 0;
+    	sameY1 = 0;
+    	sameX2 = 0;
+    	sameY2 = 0;
+    	
+    	
+    	
     	bit<32> message;
     	
     	    	
@@ -353,52 +369,57 @@ I don't care about the mac addresses, just sending it back
     	bit<16> diffX2;
     	bit<16> diffY2;
     	
+    	diffX1 = 0;
+    	diffX2 = 0;
+    	diffY2 = 0;
+    	diffY1 = 0; 
+    	
     	if (X1 > X) {
     	  diffX1 = X1 - X;
     	}
-    	if (X1 > X) {
-    	  diffX1 = X1 - X;
+    	if (X1 < X) {
+    	  diffX1 = X - X1;
     	}
-    	//////////////Continue this code
-
+    	
+    	if (X2 > X) {
+    	  diffX2 = X2 - X;
+    	}
+    	if (X2 < X) {
+    	  diffX2 = X - X2;
+    	}
     	
     	
+    	if (Y1 > Y) {
+    	  diffY1 = Y1 - Y;
+    	}
+    	if (Y1 < Y) {
+    	  diffY1 = Y - Y1;
+    	}
     	
+    	if (Y2 > Y) {
+    	  diffY2 = Y2 - Y;
+    	}
+    	if (X2 < X) {
+    	  diffY2 = Y - Y2;
+    	}
     	
-    	diffX1 = X1 - X;
-    	diffX2 = X2 - X;
-    	diffY1 = Y1 - Y;
-    	diffY2 = Y2 - Y;
-    	
-    	
-    	/*Or 1 away:
-    	| diffX1 == -1 | diffX1 == 1
-    	*/
+    
     	
     	if (diffX1 == 0) {
     	  sameX1 = 1;
-    	} else {
-    	  sameX1 = 0;
-    	}
+    	} 
 
     	if (diffX1 == 1) {
     	  sameX1 = 1;
-    	} else {
-    	  sameX1 = 0;
-    	}
-
-
+    	} 
 
     	if (diffX2 == 0) {
     	  sameX2 = 1;
-    	} else {
-    	  sameX2 = 0;
     	}
     	
     	if (diffX2 == 1) {
     	  sameX2 = 1;
-    	} else {
-    	  sameX2 = 0;
+ 
     	}
     	
     	if (diffY1 == 0) {
@@ -408,53 +429,81 @@ I don't care about the mac addresses, just sending it back
     	}
     	if (diffY1 == 1) {
     	  sameY1 = 1;
-    	} else {
-    	  sameY1 = 0;
-    	}
+    	} 
 
     	if (diffY2 == 0) {
     	  sameY2 = 1;
-    	} else {
-    	  sameY2 = 0;
-    	}
+    	} 
     	
     	if (diffY2 == 1) {
     	  sameY2 = 1;
-    	} else {
-    	  sameY2 = 0;
-    	}
+    	} 
     	
     	
     	
-    	const bit<8> outgame = 0;
+    	bit<8> outgame;
+    	bit<32> outindex;
+    	bit<24> caught;
+    	bit <8> playercaught;
+    	bit<4> doublecheck;
+    	
+    	//This will detect if both players have been 'caught'
+    	doublecheck = 0;
+
+    	
+    	caught = 0x697373;
+    	playercaught = 0x4D;
+    	
+    	
+    	outindex = 0; 
+    	outgame = 1;
+    	
     	
     	if (sameX1 == 1) {
     	  if (sameY1 == 1) {
-    	  message = (bit<32>)P1;    //Returns the player number who got caught
-    	  //inPlay.write(P1, outgame);
-    	  } else {
-    	    message = 0x43; //returns 'C' for clear
+    	  //Getting the text out correct
+    	  playercaught = Pcaught1;    //Returns the player number who got caught
+    	  caught = 0x6F7574;
+    	  
+    	  //Writing to the register that the player is out
+    	  outgame = 0;
+    	  outindex = P1;
+    	  doublecheck = doublecheck + 1;
+    	  
     	  }
-    	} else if (sameX2 == 1) {
-    	    if (sameY2 == 1) {
-    	      message = (bit<32>)P2;    //Returns player 2 only if they're adjacent and player 1 isn't
-    	      //inPlay.write(P2, outgame);
-    	  } else {
-    	    message = 0x43; //returns 'C' for clear
-    	  }
-    	  } else {
-    	    message = 0x43; //returns 'C' for clear
-    	  }
+    	}
     	
+    	//Changes first player to out
+    	inPlay.write(outindex, outgame);
     	
-    
+    	if (sameX2 == 1) {
+    	  if (sameY2 == 1) {
+    	    playercaught = Pcaught2; 
+    	    caught = 0x6F7574;
+    	       
+    	    outindex = P2;
+    	    outgame = 0;
+    	    
+    	    doublecheck = doublecheck + 1;
+  
+    	  } 
+    	  }
+    	  
+    	  
+    	message = playercaught ++ caught;
+    	
+    	if (doublecheck == 2) {
+    	  message = (bit<32>) 0x64626b6c;
+    	}
+    	  
+    	inPlay.write(outindex, outgame);
         send_back(message);
     }
     
     
     action operation_init() {
     	
-    	//making all players as in and not with flag
+    	//making all players as in and not with flag and in the 4 corners
     	
     	const bit<8> inGame = 1;
     	const bit<8> flagless = 0;
@@ -465,6 +514,16 @@ I don't care about the mac addresses, just sending it back
     	const bit<32> B1 = 2;
     	const bit<32> B2 = 3;
     	
+    	
+    	const bit<16> StartX0 = 9;
+    	const bit<16> StartY0 = 0;
+    	const bit<16> StartX1 = 9;
+    	const bit<16> StartY1 = 4;
+    	const bit<16> StartX2 = 0;
+    	const bit<16> StartY2 = 0;
+    	const bit<16> StartX3 = 0;
+    	const bit<16> StartY3 = 4;
+    	
     	inPlay.write(A1, inGame);
     	inPlay.write(A2, inGame);
     	inPlay.write(B1, inGame);
@@ -474,10 +533,20 @@ I don't care about the mac addresses, just sending it back
     	Flag.write(A2, flagless);
     	Flag.write(B1, flagless);
     	Flag.write(B2, flagless);
+    	
+    	rx.write(A1, StartX0);
+    	rx.write(A2, StartX1);
+    	rx.write(B1, StartX2);
+    	rx.write(B2, StartX3);
+    	
+    	ry.write(A1, StartY0);
+    	ry.write(A2, StartY1);
+    	ry.write(B1, StartY2);
+    	ry.write(B2, StartY3);
         	
     	
     	bit<32> message;
-    	message = 0x49;  //Returns the letter 'I' for initialised
+    	message = 0x20;  //Returns ' '
     
         send_back(message);
     }
@@ -509,68 +578,74 @@ I don't care about the mac addresses, just sending it back
     	
     	if (activeTeam == 0) {
     	  Fx = 0;
-    	  Fy = 2;
+    	  Fy = 3;
     	} else {
     	  Fx = 9;
-    	  Fy = 2;
+    	  Fy = 1;
     	}
     	
     	bit<2> sameX;
     	bit<2> sameY;
     	bit<32> message;
     	
+    	bit<16> diffX;
+    	bit<16> diffY;
     	
+    	diffX = 0;
+    	diffY = 0;
     	
     	//Comparing locations
-    	if (Fx-X == 0) {
-    	  sameX = 1;
-    	} else {
-    	  sameX = 0;
+    	if (Fx > X) {
+    	  diffX = Fx - X;
     	}
-    	if (Fx-X == 1) {
-    	  sameX = 1;
-    	} else {
-    	  sameX = 0;
-    	}
-    	if (Fx-X == -1) {
-    	  sameX = 1;
-    	} else {
-    	  sameX = 0;
+    	if (Fx < X) {
+    	  diffX = X - Fx;
     	}
     	
+    	if (Fy > Y) {
+    	  diffX = Fy - Y;
+    	}
+    	if (Fy < Y) {
+    	  diffX = Y - Fy;
+    	}
+    	
+    	
+    	sameX = 0;
+    	sameY = 0;
+    	
+    	if (diffX == 0) {
+    	  sameX = 1;
+    	} 
+    	if (diffX == 1) {
+    	  sameX = 1;
+    	}
+
     	     
-    	if (Fy-Y == 0) {
+    	if (diffY == 0) {
     	  sameY = 1;
-    	} else {
-    	  sameY = 0;
-    	}
-    	if (Fy-Y == 1) {
+    	} 
+    	if (diffY == 1) {
     	  sameY = 1;
-    	} else {
-    	  sameY = 0;
-    	}
-    	if (Fy-Y == -1) {
-    	  sameY = 1;
-    	} else {
-    	  sameY = 0;
-    	}  
+    	} 
     	
+    	message = 0x6661696c;
+
+    	bit<8> flagfull;
     	
+    	flagfull = 0;
+
 
     	if (sameX == 1) {
     	  if (sameY == 1) {
-    	    //Flag.write(index, 1);
+    	    flagfull = 1;
     	    message = 0x54616721; //returns 'Tag!'
-    	} else {
-    	  message = 0x46; //returns 'F' for failed
     	} 
-    	} else {
-    	  message = 0x46; //returns 'F' for failed
-    	  
-    	  
     	}
-
+    	  
+    	  
     	
+	//Writing 1 if the player has the flag, 0 if they still don't
+    	Flag.write(index, flagfull);
         send_back(message);
     }
 
@@ -578,7 +653,61 @@ I don't care about the mac addresses, just sending it back
         mark_to_drop(standard_metadata);
     }
     
+    action operation_all() {
+        
+        bit<32> index;
+    	index = (bit<32>) hdr.player.ass;
+    	
+    	//getting all of the player data
+    	bit<8> stillalive;
+    	bit<8> hasFlag;
+    	bit<16> x_coord;
+    	bit<16> y_coord;
+    	bit<32> message;
+    	
+    	rx.read(x_coord, index);
+    	ry.read(y_coord, index);
+    	inPlay.read(stillalive, index);
+    	Flag.read(hasFlag, index);
+    	message = 0x3a29;
+    	
+    	hdr.player.ingame = stillalive;
+    	hdr.player.flag = hasFlag;
+    	hdr.player.x_loc = x_coord;
+    	hdr.player.y_loc = y_coord;
+    	hdr.player.res = message;
+    	
+    	
+    	standard_metadata.egress_spec = standard_metadata.ingress_port;
+    	
+    }
     
+    action operation_win() {
+    	
+    	bit<8> flagStatus;
+    	bit<32> index;
+    	bit<32> message;
+    	bit<8> playervalid;
+    	
+    	message = 0x6e6f7065;
+    	
+    	index = (bit<32>) hdr.player.ass;
+    	
+    	Flag.read(flagStatus, index);
+    	inPlay.read(playervalid, index);
+    	
+    	
+    	if (playervalid == 1) {
+    	  if (flagStatus == 1) {
+    	    message = 0x57696E21;
+    	  }
+    	}
+        
+        operation_init();
+        send_back(message);
+
+ 
+    }
     
 
     table calculate {
@@ -589,10 +718,12 @@ I don't care about the mac addresses, just sending it back
             operation_move;
             operation_check;
             operation_capture;
-            //operation_win;
+            operation_win;
             operation_state;
             operation_init;
+            operation_all;
             operation_drop;
+            
         }
         const default_action = operation_drop();
         const entries = {
@@ -600,9 +731,10 @@ I don't care about the mac addresses, just sending it back
             
             PLAYER_CHECK: operation_check();
             PLAYER_CAPT : operation_capture();
-            //PLAYER_WIN  : operation_win();
+            PLAYER_WIN  : operation_win();
             PLAYER_STATE: operation_state();
             PLAYER_INIT : operation_init();
+            PLAYER_ALL  : operation_all();
         }
     }
 
